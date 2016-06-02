@@ -4,15 +4,18 @@ The code is broken up into three parts, ```main()``` the entry point of the appl
 #Example Output
 Below is a simple output taken from my VMWare station.<br />
 ```
-root@wt7-dev:~/Programming/c/802Sniff# gcc 802sniff.c -lpcap -o 802sniff -ggdb
 root@wt7-dev:~/Programming/c/802Sniff# ./802sniff 
 Usage: ./80211sniff deviceName
-root@wt7-dev:~/Programming/c/802Sniff# ./802sniff wrong-dev
-ERROR: wrong-dev: SIOCETHTOOL(ETHTOOL_GET_TS_INFO) ioctl failed: No such device
+root@wt7-dev:~/Programming/c/802Sniff# ./802sniff wrong-device
+ERROR: wrong-device: SIOCETHTOOL(ETHTOOL_GET_TS_INFO) ioctl failed: No such device
+root@wt7-dev:~/Programming/c/802Sniff# gcc 802sniff.c -lpcap -o 802sniff -ggdb
 root@wt7-dev:~/Programming/c/802Sniff# ./802sniff wlan0mon
-ESSID string: NETGEAR61
-BSSID string: DC:EF:09:A0:4B:3A
-root@wt7-dev:~/Programming/c/802Sniff#
+RSSI: -39 dBm
+AP Frequency: 2457Mhz
+ESSID length: 16 bytes.
+ESSID string: Dell M900HD 55fa
+BSSID string: 24:FD:52:78:55:FA
+root@wt7-dev:~/Programming/c/802Sniff# 
 ```
 #Tagged Parameters
 Tagged parameters are a way of efficiently transmitting data that is of variable length. For instance, the ESSID, or AP name, e.g. "Linksys" or "Free open WiFi", is something that is of variable length. To transmit this data, a tagged parameter can be used. These tagged parameters on my machine (Weakerthan Linux 7) start at the offset of 62 bytes. The tagged parameters are not delimited in any way, so finding the length of the tag is important. They begin with a "tag type" byte, which specifies the type of tag e.g. "RSN information" or "SSID Parameter" and the second byte is the length (in bytes). Consider the example snippet below from the Tagged parameters segment of an 802.11 packet.
