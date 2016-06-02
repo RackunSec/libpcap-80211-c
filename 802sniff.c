@@ -60,21 +60,21 @@ void pcapHandler(u_char *args, const struct pcap_pkthdr *header, const u_char *p
 	struct radiotap_header *rtaphdr;
 	rtaphdr = (struct radiotap_header *) packet;
 	offset = rtaphdr->it_len; // 26 bytes on my machine
-	if(packet[offset]==0x80){ // 0x80 is 128 in dec. It is a Beacon MGMT frame
-		bssid = packet + 36; // store the BSSID/AP MAC addr
-		essid = packet + 64; // store the ESSID/Router name too
-		char *ssid = malloc(63); // 63 byte limit
-		unsigned int i = 0; // used in loop below:
-		while(essid[i] > 0x1){ // uncomment these to see each byte individually:
-			//printf ("hex byte: %x\n",essid[i]); // view byte
-			//printf ("hex char: %c\n",essid[i]); // view ASCII
-			ssid[i] = essid[i]; // store the ESSID bytes in *ssid
-			i++; // POSTFIX
-		}
-		ssid[i] = '\0'; // terminate the string
-		printf("ESSID string: %s\n", ssid); // print the stored ESSID bytes
-		printf("BSSID string: %02X:%02X:%02X:%02X:%02X:%02X\n",bssid[0],bssid[1],bssid[2],bssid[3],bssid[4],bssid[5]);
+	//if(packet[offset]==0x80){ // 0x80 is 128 in dec. It is a Beacon MGMT frame // REMOVED for BPF syntax
+	bssid = packet + 36; // store the BSSID/AP MAC addr
+	essid = packet + 64; // store the ESSID/Router name too
+	char *ssid = malloc(63); // 63 byte limit
+	unsigned int i = 0; // used in loop below:
+	while(essid[i] > 0x1){ // uncomment these to see each byte individually:
+		//printf ("hex byte: %x\n",essid[i]); // view byte
+		//printf ("hex char: %c\n",essid[i]); // view ASCII
+		ssid[i] = essid[i]; // store the ESSID bytes in *ssid
+		i++; // POSTFIX
 	}
+	ssid[i] = '\0'; // terminate the string
+	fprintf(stdout,"ESSID string: %s\n", ssid); // print the stored ESSID bytes
+	fprintf(stdout,"BSSID string: %02X:%02X:%02X:%02X:%02X:%02X\n",bssid[0],bssid[1],bssid[2],bssid[3],bssid[4],bssid[5]);
+	//} // BPF syntax
 	return;
 }
 // print how to use the application:
