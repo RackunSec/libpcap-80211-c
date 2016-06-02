@@ -14,7 +14,7 @@ BSSID string: DC:EF:09:A0:4B:3A
 root@wt7-dev:~/Programming/c/802Sniff#
 ```
 #Tagged Parameters
-Tagged parameters are a way of efficiently transmitting data that is of variable length. For instance, the ESSID, or AP name, e.g. "Linksys" or "Free open WiFi", is something that is of variable length. To transmit this data, a tagged parameter can be used. These tagged parameters on my machine (Weakerthan Linux 7) start at the offset of 62 bytes. They begin with a "tag type" byte, which specifies the type of tag e.g. "RSN information" or "SSID Parameter" and the second byte is the length (in bytes). Each tag data field is terminated/delimited with a null byte, 00. Consider the example snippet below from the Tagged parameters segment of an 802.11 packet.
+Tagged parameters are a way of efficiently transmitting data that is of variable length. For instance, the ESSID, or AP name, e.g. "Linksys" or "Free open WiFi", is something that is of variable length. To transmit this data, a tagged parameter can be used. These tagged parameters on my machine (Weakerthan Linux 7) start at the offset of 62 bytes. The tagged parameters are not delimited in any way, so finding the length of the tag is important. They begin with a "tag type" byte, which specifies the type of tag e.g. "RSN information" or "SSID Parameter" and the second byte is the length (in bytes). Consider the example snippet below from the Tagged parameters segment of an 802.11 packet.
 ```
 0000   30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00
 0010   00 0f ac 01 28 00
