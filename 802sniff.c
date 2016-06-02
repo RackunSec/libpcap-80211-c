@@ -60,8 +60,21 @@ void pcapHandler(u_char *args, const struct pcap_pkthdr *header, const u_char *p
 	const u_char *essidLen;
 	const u_char *channel; // the frequency (in Mhz) of the AP Radio
 	const u_char *rssi; // received signal strength
-	const u_char *akm; // Auth Key Mgmt 00-0f-ac-01 == EAP, 00-0f-ac-02 == PSK
-
+	/*
+	 * Determining the Security protocol: Auth Key Mgmt: 00-0f-ac-01 == EAP, 00-0f-ac-02 == PSK
+	 * Pairwise Cipher Suite, PCS
+	 * Auth Key MGMT, AKM
+	 *
+	 * These are "tagged params" and need to be parsed programmatically
+	 *
+	 * WPA2/PSK/CCMP = (AKM:00-0f-ac-02,PCS:00-0f-ac-04) tag-type:0x30
+	 * WEP 40 = PCS:00-0f-ac-01
+	 * WEP 104 = PCS:00-0f-ac-05
+	 * TKIP = PCS:00-0f-ac-02
+	 * Microsoft Suite TKIP = PCS:00-50-f2-02, tag-type: 0xdd
+	 * WPA2 Enterprise = (AKM:00-0f-ac-04,PCS:00-0f-ac-04) tag-type: 0x30
+	 *
+	 */
 	int offset = 0;
 	struct radiotap_header *rtaphdr;
 	rtaphdr = (struct radiotap_header *) packet;
