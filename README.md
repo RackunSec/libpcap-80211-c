@@ -2,7 +2,7 @@
 This is a simple example of code from the upcoming Penetration Testing 802.11 course for WeakNet Academy. This is a simple example of an 802.11 protocol analyzer. This code simply sniffs on a RFMON-enabled device for a beacon when compiled, linked and loaded. Libpcap is an incredible tool for RF entusiasts and programmers alike. My goal for the lesson is to show how simple the code can be for such a tool. <br /><br />
 The code is broken up into three parts, ```main()``` the entry point of the application, ```pcapHandler()``` the handler that gets called for every packet found, and ```usage()``` which simply just tells the user how to use the application. 
 #Example Output
-Below is a simple output taken from my VMWare station.<br />
+Below is a simple output taken from my VMWare station with Weakerthan Linux 7 and an ALFA 802.11 USB WiFi adapter.<br />
 ```
 root@wt7-dev:~/Programming/c/802Sniff# ./802sniff 
 Usage: ./80211sniff deviceName
@@ -29,4 +29,5 @@ So to do anything with tagged paremeters, we simply need to programmatically wal
 
 #References
 TCPDump: http://www.tcpdump.org/pcap.html<br />
-RadioTap: http://www.radiotap.org/
+RadioTap: http://www.radiotap.org/<br />
+Weakerthan Linux 7: http://www.weaknetlabs.com/p/weakerthan-linux-6.html 
