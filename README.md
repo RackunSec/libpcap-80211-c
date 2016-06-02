@@ -1,6 +1,20 @@
 #Libpcap, 802.11, and C
 This is a simple example of code from the upcoming Penetration Testing 802.11 course for WeakNet Academy. This is a simple example of an 802.11 protocol analyzer. This code simply sniffs on a RFMON-enabled device for a beacon when compiled, linked and loaded. Libpcap is an incredible tool for RF entusiasts and programmers alike. My goal for the lesson is to show how simple the code can be for such a tool. <br /><br />
-The code is broken up into three parts, ```main()``` the entry point of the application, ```pcapHandler()``` the handler that gets called for every packet found, and ```usage()``` which simply just tells the user how to use the application. 
+The code is broken up into three parts, ```main()``` the entry point of the application, ```pcapHandler()``` the handler that gets called for every packet found, and ```usage()``` which simply just tells the user how to use the application.
+## main()
+This is the main entry point for any C application. In this function, we set the application up to start listening on the specified wireless device for a packet. We create a packet capture filter using the TCPDump/LibPCAP filter syntax after calling ```pcap_open_live()``` and call ```pcap_dispatch()```.  
+## pcapHandler()
+This function is called by the ```pcap_dispatch()``` function for each packet found. In our case, we only have a single packet to process. ```pcap_loop()``` can be easily substituted for this function which will loop through packets indefinitely.
+## usage()
+This function simply prints the usage for the application. It is called when the argument count to the application is too low using the following syntax.
+```
+if(argc >= 2){ // argument to contain a wireless device name
+ // arguments OK. do stuff here
+}else{ // no argument, display usage:
+	usage();
+	return 1;
+}
+```
 #Example Output
 Below is a simple output taken from my VMWare station with Weakerthan Linux 7 and an ALFA 802.11 USB WiFi adapter.<br />
 ```
