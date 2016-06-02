@@ -16,8 +16,9 @@ if(argc >= 2){ // argument to contain a wireless device name
 }
 ```
 ##PCAP Functions Used
+Below I will cover all of the LibPCAP specific functions used in the 80211sniff.c code.
 ### pcap_open_live()
-This function opens the device for capturing packets. We use it as, ```pcap_open_live(dev, BUFSIZ, 0, 3000, erbuf);```, which has 5 arguments. This function is for creating a handle which we creatively just name ```pcap_t *handle```.
+This function opens the device for capturing packets. We use it as, ```handle = pcap_open_live(dev, BUFSIZ, 0, 3000, erbuf);``` which has 5 arguments. This function is for creating a handle which we creatively just name ```pcap_t *handle```. ```handle``` will be NULL if an error has occurred while trying to listen on the device. The error will be stored in memory and pointed to by the the ```erbuf``` string pointer. This is why we check for an error and print it if so like so, ```if(handle==NULL){ printf("ERROR: %s\n",erbuf); exit(1); } // was the device ready/readable?```
 <ul>
 <li>dev - The wireless device.</li>
 <li>BUFSIZ - size of buffer or snap length of the handle.</li>
@@ -25,6 +26,8 @@ This function opens the device for capturing packets. We use it as, ```pcap_open
 <li>3000 - timeout for reading data in milliseconds.</li>
 <li>erbuf - a place to store any error that arises from trying to run the ```pcap_open_live()``` function.</li>
 </ul>
+### pcap_datalink()
+...
 ### pcap_compile()/pcap_setfilter()
 ...
 ### pcap_open_dead()/pcap_dump_open()/pcap_dump()/pcap_close()
