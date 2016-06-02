@@ -20,7 +20,7 @@ Tagged parameters are a way of efficiently transmitting data that is of variable
 0010   00 0f ac 01 28 00
 ```
 The first byte, 30 is hexadecimal for 48, which is for "RSN Information". The second byte, 14 is hexadecimal for 20, which means the data length of the tagged parameter is 20 bytes. The entire tag itself is 22 bytes, but the first 2 bytes are for type and length.
-<br />
+<br /><br />
 So to do anything with tagged paremeters, we simply need to programmatically walk through the bytes of the tagged paramters segment of the packet, get the type and length of the parameter for each tag before processing/handling them.
 
 #References
