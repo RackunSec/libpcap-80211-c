@@ -6,6 +6,8 @@
  * Listens for a beacon and prints data if one found
  * exits if not.
  *
+ * Version 1.1
+ *
  */
 #include<stdio.h> // for simple IO
 #include<stdlib.h> // for malloc();
@@ -25,8 +27,20 @@ int main(int argc, char ** argv){ // main function
 		handle = pcap_open_live(dev, BUFSIZ, 0, 3000, erbuf);
 		if(handle==NULL){ printf("ERROR: %s\n",erbuf); exit(1); } // was the device ready/readable?
 		// printf("Type: %d\n",pcap_datalink(handle)); // DEBUG
+		
+		// Create a filter "program"
+		char *filter = "type mgt subtype beacon"; // beacon frame WLAN
+		struct bpf_program fp; 
+		bpf_u_int32 netp; // Berkley Packet Filter (same as u_int32_t i believe)
+		if(pcap_compile(handle,&fp,filter,0,netp)==-1) // -1 means failed
+			fprintf(stderr,"Error compiling Libpcap filter, %s\n",filter);
+		if(pcap_setfilter(handle,&fp)==-1) // -1 means failed - but we don't exit(1)
+			fprintf(stderr,"Error setting Libpcap filter, %s\n",filter); // same as above
+
+		// finally, we call the dispatch:
 		pcap_dispatch(handle, 1, pcapHandler, NULL); // dispatch to call upon packet 
-		return 0;
+	
+		return 0; // good bye main()!
 	}else{ // no argument, display usage:
 		usage();
 		return 1;
