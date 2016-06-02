@@ -54,15 +54,27 @@ void pcapHandler(u_char *args, const struct pcap_pkthdr *header, const u_char *p
 		uint8_t it_pad; // Padding: 0 - Aligns the fields onto natural word boundaries
 		uint16_t it_len;// Length: 26 - entire length of RadioTap header
 	};
+	// These are placeholders for offset values:
 	const u_char *bssid; // a place to put our BSSID \ these are bytes
 	const u_char *essid; // a place to put our ESSID / from the packet
+	const u_char *essidLen;
+	const u_char *channel; // the frequency (in Mhz) of the AP Radio
+	const u_char *rssi; // received signal strength
+	const u_char *akm; // Auth Key Mgmt 00-0f-ac-01 == EAP, 00-0f-ac-02 == PSK
+
 	int offset = 0;
 	struct radiotap_header *rtaphdr;
 	rtaphdr = (struct radiotap_header *) packet;
 	offset = rtaphdr->it_len; // 26 bytes on my machine
 	//if(packet[offset]==0x80){ // 0x80 is 128 in dec. It is a Beacon MGMT frame // REMOVED for BPF syntax
-	bssid = packet + 36; // store the BSSID/AP MAC addr
+	bssid = packet + 42; // store the BSSID/AP MAC addr, 36 byte offset is transmitter address
 	essid = packet + 64; // store the ESSID/Router name too
+	essidLen = packet + 63; // store the ESSID length // this can be used to avoid looping bytes until >0x1 as below
+	rssi = packet + 22; // this is hex and this value is subtracted from 256 to get -X dbm.
+	signed int rssiDbm = rssi[0] - 256;
+	channel = packet + 18; // channel in little endian format (2 bytes)
+	int channelFreq = channel[1] * 256 + channel[0]; // a little bit of math, remember little endian
+	// 87 byte offset contains the "channel number" as per 802.11, e.g. 2412 = "channel 11"
 	char *ssid = malloc(63); // 63 byte limit
 	unsigned int i = 0; // used in loop below:
 	while(essid[i] > 0x1){ // uncomment these to see each byte individually:
@@ -72,9 +84,22 @@ void pcapHandler(u_char *args, const struct pcap_pkthdr *header, const u_char *p
 		i++; // POSTFIX
 	}
 	ssid[i] = '\0'; // terminate the string
+	fprintf(stdout,"RSSI: %d dBm\n",rssiDbm);
+	fprintf(stdout,"AP Frequency: %iMhz\n",channelFreq);
+	fprintf(stdout,"ESSID length: %i bytes.\n",essidLen[0]);
 	fprintf(stdout,"ESSID string: %s\n", ssid); // print the stored ESSID bytes
 	fprintf(stdout,"BSSID string: %02X:%02X:%02X:%02X:%02X:%02X\n",bssid[0],bssid[1],bssid[2],bssid[3],bssid[4],bssid[5]);
-	//} // BPF syntax
+	//} // REMOVED for BPF syntax
+	
+	// Let's write the beacon to a file:
+	pcap_dumper_t *outputFile;
+	pcap_t *fileHandle;
+	char *outputFileName = "output.cap";
+	fileHandle = pcap_open_dead(DLT_IEEE802_11_RADIO, BUFSIZ);
+	outputFile = pcap_dump_open(fileHandle,outputFileName);
+	pcap_dump((u_char *) outputFile,header, packet);
+	pcap_close(fileHandle);
+
 	return;
 }
 // print how to use the application:
