@@ -1,4 +1,4 @@
-#Libpcap, 802.11, and C
+#LibPCAP, 802.11, and C
 This is a simple example of home-brew 802.11 protocol analyzer code is from the upcoming Penetration Testing 802.11 course for WeakNet Academy. This code simply sniffs on a RFMON-enabled device for a beacon when compiled, linked and loaded. Libpcap is an incredible tool for RF enthusiasts and programmers alike. My goal for the lesson is to show how simple the code can be for such a tool. <br /><br />
 The code is broken up into three parts, ```main()``` the entry point of the application, ```pcapHandler()``` the handler that gets called for every packet found, and ```usage()``` which simply just tells the user how to use the application.
 ### main()
