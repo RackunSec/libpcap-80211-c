@@ -51,12 +51,12 @@ root@wt7-dev:~/Programming/c/802Sniff#
 ##Tagged Parameters
 Tagged parameters are a way of efficiently transmitting data that is of variable length. For instance, the ESSID, or AP name, e.g. "Linksys" or "Free open WiFi", is something that is of variable length. To transmit this data, a tagged parameter can be used. These tagged parameters on my machine (Weakerthan Linux 7) start at the offset of 62 bytes. The tagged parameters are not delimited in any way, so finding the length of the tag is important. They begin with a "tag type" byte, which specifies the type of tag e.g. "RSN information" or "SSID Parameter" and the second byte is the length (in bytes). Consider the example snippet below from the Tagged parameters segment of an 802.11 packet.
 ```
-0000   30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00
-0010   00 0f ac 01 28 00
+30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00
+00 0f ac 01 28 00
 ```
-The first byte, 30 is hexadecimal for 48, which is for "RSN Information". The second byte, 14 is hexadecimal for 20, which means the data length of the tagged parameter is 20 bytes. The entire tag itself is 22 bytes, but the first 2 bytes are for type and length.
+Remember that each byte is simply a number ranging from 00 to ff. To make sens of the numbers, we need to figure out what kind of tag-type we are working with. The first byte in the snippet above, which is the tag-type, 30 is hexadecimal for 48, which is for "RSN Information". The second byte, 14 is hexadecimal for 20, which means the data length of the tagged parameter is 20 bytes. The entire tag itself is 22 bytes, but the first 2 bytes are for type and length.
 <br /><br />
-So to do anything with tagged paremeters, we simply need to programmatically walk through the bytes of the tagged paramters segment of the packet, get the type and length of the parameter for each tag before processing/handling them.
+So to do anything with tagged paremeters, we simply need to programmatically walk through the bytes of the tagged paramters segment of the packet, get the type and length of the parameter for each tag before processing/handling them. Without tagged parameters, we would need to send packets with lots of unnecessary padding. Consider the fact that an ESSID can be 32 characters in length. If the ESSID were set to a 9 character string, that would require sending 32 - 9 = 23 padding characters! This is one reason why tagged parameters are more efficient when transmitting data.
 
 ##References
 TCPDump: http://www.tcpdump.org/pcap.html<br />
