@@ -33,7 +33,7 @@ The ```pcap_compile()``` function is used for creating a Berkley Filter Program,
 * **handle** - the opened handle to the PCAP session created by ```pcap_open_live()```.
 * **bpf program** - a dereferenced pointer to a struct of the type bpf_program as we created with ```struct bpf_program fp; ```.
 * **filter** - our string object, ```filter``` that contains the BPF filter syntax as described above.
-* **0** - Boolena for optimization
+* **0** - Boolean for optimization
 * **netp** - an object of type ```bpf_u_int32``` which is the netmask of the device. In our case, we don't have a netmask since our device is in RFMON mode.
 This sub routine will return a -1 if it fails, thus we have a test as ```if(pcap_compile(handle,&fp,filter,0,netp)==-1) // -1 means failed``` which will exit the application by calling ```exit(1)``` if true.
 
