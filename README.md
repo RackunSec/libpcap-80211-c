@@ -1,4 +1,4 @@
-#LibPCAP, 802.11, and C
+# LibPCAP, 802.11, and C
 This is a simple example of home-brew 802.11 protocol analyzer code is from the upcoming Penetration Testing 802.11 course for WeakNet Academy. This code simply sniffs on a RFMON-enabled device for a beacon when compiled, linked and loaded. Libpcap is an incredible tool for RF enthusiasts and programmers alike. My goal for the lesson is to show how simple the code can be for such a tool. <br /><br />
 The code is broken up into three parts, ```main()``` the entry point of the application, ```pcapHandler()``` the handler that gets called for every packet found, and ```usage()``` which simply just tells the user how to use the application.
 ### main()
@@ -15,7 +15,7 @@ if(argc >= 2){ // argument to contain a wireless device name
 	return 1;
 }
 ```
-##PCAP Functions Used
+## PCAP Functions Used
 Below I will cover all of the LibPCAP specific functions used in the 80211sniff.c code.
 ### pcap_open_live()
 This function opens the device for capturing packets. We use it as, ```handle = pcap_open_live(dev, BUFSIZ, 0, 3000, erbuf);``` which has 5 arguments. This function is for creating a handle which we creatively just name ```pcap_t *handle```. ```handle``` will be NULL if an error has occurred while trying to listen on the device. The error will be stored in memory and pointed to by the the ```erbuf``` string pointer. This is why we check for an error and print it if so like so, ```if(handle==NULL){ printf("ERROR: %s\n",erbuf); exit(1); } // was the device ready/readable?```
@@ -52,7 +52,7 @@ The third subroutine, ```pcap_dump()```, writes the packet ot the file that is o
 * **packet** - the ```const u_char *packet``` passed to the ```pcapHandler()``` function and is also passed by the ```pcap_dispatch()``` function.
 
 Finally, our last function is the ```pcap_close()``` fucntion which simply closes the file descriptor argument, ```fileHandle```. Without closing the file descriptor we could have corrupted data left in the ```./output.cap``` file after our capture session.
-#Example Output
+# Example Output
 Below is a simple output taken from my VMWare station with Weakerthan Linux 7 and an ALFA 802.11 USB WiFi adapter.<br />
 ```
 root@wt7-dev:~/Programming/c/802Sniff# ./802sniff 
@@ -68,7 +68,7 @@ ESSID string: Dell M900HD 55fa
 BSSID string: 24:FD:52:78:55:FA
 root@wt7-dev:~/Programming/c/802Sniff# 
 ```
-##Tagged Parameters
+## Tagged Parameters
 Tagged parameters are a way of efficiently transmitting data that is of variable length. For instance, the ESSID, or AP name, e.g. "Linksys" or "Free open WiFi", is something that is of variable length. To transmit this data, a tagged parameter can be used. These tagged parameters on my machine (Weakerthan Linux 7) start at the offset of 62 bytes. The tagged parameters are not delimited in any way, so finding the length of the tag is important. They begin with a "tag type" byte, which specifies the type of tag e.g. "RSN information" or "SSID Parameter" and the second byte is the length (in bytes). Consider the example snippet below from the Tagged parameters segment of an 802.11 packet.
 ```
 30 14 01 00 00 0f ac 04 01 00 00 0f ac 04 01 00
@@ -78,12 +78,12 @@ Remember that each byte is simply a number ranging from 00 to ff. To make sens o
 <br /><br />
 So to do anything with tagged paremeters, we simply need to programmatically walk through the bytes of the tagged paramters segment of the packet, get the type and length of the parameter for each tag before processing/handling them. Without tagged parameters, we would need to send packets with lots of unnecessary padding. Consider the fact that an ESSID can be 32 characters in length. If the ESSID were set to a 9 character string, that would require sending 32 - 9 = 23 padding characters! This is one reason why tagged parameters are more efficient when transmitting data.
 
-##Compiling
+##  Compiling
 Compiling an application which uses libraries requires a few special parameters, in our case we simply specify that we want to use libpcap as so,
 
 ```root@wt7:~ #gcc 80211sniff.c -lpcap -o 80211sniff -ggdb```.
 
-##References
+# References
 TCPDump: http://www.tcpdump.org/pcap.html<br />
 TCPDump Link-Layer Header Info: http://www.tcpdump.org/linktypes.html<br />
 Berkley Filter Program, TCPDump filters: http://biot.com/capstats/bpf.html<br />
